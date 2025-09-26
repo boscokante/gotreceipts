@@ -1,0 +1,35 @@
+/GotReceipts
+  /iOS
+    GotReceiptsApp.swift
+    Scanner/
+      DocumentScannerView.swift
+      OCRService.swift
+    Speech/
+      SpeechRecognizer.swift
+    NLP/
+      ReceiptParser.swift
+    Data/
+      Models.swift
+      UploadQueue.swift
+      FirestoreService.swift
+    Location/
+      LocationService.swift
+    Background/
+      BGTasks.swift
+    UI/
+      CaptureFlowView.swift
+      ConfirmTinySheet.swift
+  /server
+    functions/
+      index.ts
+      qbo/
+        oauth.ts
+        vendors.ts
+        expenses.ts
+        attachable.ts
+      firestoreTriggers.ts
+    .env.example
+  /docs
+    FullPlanReadMe.md
+    README.md
+
