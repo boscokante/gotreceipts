@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GotReceipts Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        
+        <!-- Login View -->
+        <div id="login-view">
+            <h1>GotReceipts Dashboard</h1>
+            <div class="form-container">
+                <h2>Sign In</h2>
+                <input type="email" id="email" placeholder="Email">
+                <input type="password" id="password" placeholder="Password">
+                <button id="login-button">Login</button>
+                <p id="error-message" class="error-message"></p>
+            </div>
+        </div>
+
+        <!-- Dashboard View (hidden by default) -->
+        <div id="dashboard-view" style="display: none;">
+            <div class="header">
+                <h1>Dashboard</h1>
+                <button id="logout-button">Logout</button>
+            </div>
+            <div id="receipts-list">
+                <p>Loading receipts...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Import the Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-functions-compat.js"></script> <!-- Ensure this line exists -->
+
+    <!-- Import our custom app logic -->
+    <script src="app.js"></script>
+</body>
+</html>

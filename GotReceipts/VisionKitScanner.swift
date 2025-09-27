@@ -1,37 +1,52 @@
-//
-//  VisionKitScanner.swift
-//  GotReceipts
-//
-//  Created by Bosco "Bosko" Kante on 9/26/25.
-//
 import SwiftUI
 import VisionKit
 
-struct DocumentScannerView: UIViewControllerRepresentable {
-    final class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
-        let onImages: ([UIImage]) -> Void
-        init(onImages: @escaping ([UIImage]) -> Void) { self.onImages = onImages }
-        func documentCameraViewController(_ controller: VNDocumentCameraViewController,
-                                          didFinishWith scan: VNDocumentCameraScan) {
-            var images = [UIImage]()
-            for i in 0..<scan.pageCount { images.append(scan.imageOfPage(at: i)) }
-            controller.dismiss(animated: true) { self.onImages(images) }
-        }
-        func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
-            controller.dismiss(animated: true)
-        }
-        func documentCameraViewController(_ controller: VNDocumentCameraViewController,
-                                          didFailWithError error: Error) {
-            controller.dismiss(animated: true)
-        }
-    }
-    let onImages: ([UIImage]) -> Void
-    func makeCoordinator() -> Coordinator { Coordinator(onImages: onImages) }
-    func makeUIViewController(context: Context) -> VNDocumentCameraViewController {
-        let vc = VNDocumentCameraViewController()
-        vc.delegate = context.coordinator
-        return vc
-    }
-    func updateUIViewController(_ vc: VNDocumentCameraViewController, context: Context) {}
+// A new enum to represent the result of the scan
+enum ScanResult {
+    case success([UIImage])
+    case failure(Error)
+    case canceled
 }
 
+// The new scanner view uses a completion handler (callback)
+// instead of multiple bindings. This is a cleaner pattern.
+struct DocumentScannerView: UIViewControllerRepresentable {
+    
+    var completion: (ScanResult) -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(completion: completion)
+    }
+
+    func makeUIViewController(context: Context) -> VNDocumentCameraViewController {
+        let documentViewController = VNDocumentCameraViewController()
+        documentViewController.delegate = context.coordinator
+        return documentViewController
+    }
+
+    func updateUIViewController(_ uiViewController: VNDocumentCameraViewController, context: Context) {}
+
+    class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
+        var completion: (ScanResult) -> Void
+
+        init(completion: @escaping (ScanResult) -> Void) {
+            self.completion = completion
+        }
+
+        func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
+            var images: [UIImage] = []
+            for pageIndex in 0..<scan.pageCount {
+                images.append(scan.imageOfPage(at: pageIndex))
+            }
+            completion(.success(images))
+        }
+        
+        func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
+            completion(.canceled)
+        }
+
+        func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
+            completion(.failure(error))
+        }
+    }
+}
