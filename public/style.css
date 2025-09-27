@@ -84,7 +84,23 @@ th, td {
     text-align: left;
     padding: 12px;
     border-bottom: 1px solid #eee;
+    vertical-align: top;
 }
 
 th {
     background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+/* Make location column wider for addresses */
+td:nth-child(5), th:nth-child(5) {
+    min-width: 200px;
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+/* Style for coordinates when no address available */
+td:nth-child(5) {
+    font-family: monospace;
+    font-size: 0.9em;
+}

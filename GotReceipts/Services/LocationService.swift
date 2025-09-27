@@ -13,7 +13,7 @@ class LocationService: NSObject, CLLocationManagerDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
     }
 
-    // New function to convert coordinates to a city/state string.
+    // New function to convert coordinates to a detailed address string.
     func reverseGeocode(location: CLLocation, completion: @escaping (String?) -> Void) {
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location) { placemarks, error in
@@ -23,12 +23,45 @@ class LocationService: NSObject, CLLocationManagerDelegate {
                 return
             }
             
-            // Combine city and state for a user-friendly format.
-            let locationName = [placemark.locality, placemark.administrativeArea]
-                .compactMap { $0 } // Remove nils
-                .joined(separator: ", ") // e.g., "Berkeley, CA"
+            // Build a more detailed address, prioritizing specificity
+            var addressComponents: [String] = []
             
-            completion(locationName)
+            // Try to get street address first (most specific)
+            if let streetNumber = placemark.subThoroughfare,
+               let streetName = placemark.thoroughfare {
+                addressComponents.append("\(streetNumber) \(streetName)")
+            } else if let streetName = placemark.thoroughfare {
+                addressComponents.append(streetName)
+            }
+            
+            // Add neighborhood or district if available
+            if let neighborhood = placemark.subLocality {
+                addressComponents.append(neighborhood)
+            }
+            
+            // Add city
+            if let city = placemark.locality {
+                addressComponents.append(city)
+            }
+            
+            // Add state/province
+            if let state = placemark.administrativeArea {
+                addressComponents.append(state)
+            }
+            
+            // Add postal code if we have a street address
+            if let postalCode = placemark.postalCode, !addressComponents.isEmpty {
+                addressComponents.append(postalCode)
+            }
+            
+            let locationName = addressComponents.joined(separator: ", ")
+            
+            // Fallback to city, state if no street address available
+            let fallbackLocation = [placemark.locality, placemark.administrativeArea]
+                .compactMap { $0 }
+                .joined(separator: ", ")
+            
+            completion(locationName.isEmpty ? fallbackLocation : locationName)
         }
     }
 

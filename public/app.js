@@ -67,21 +67,31 @@ function listenForCompanyReceipts(companyKey) {
             return;
         }
         
-        let html = "<table><thead><tr><th>Date</th><th>Merchant</th><th>Amount</th><th>Memo</th><th>Image</th><th>Actions</th></tr></thead><tbody>";
+        let html = "<table><thead><tr><th>Date</th><th>Merchant</th><th>Amount</th><th>Memo</th><th>Location</th><th>Image</th><th>Actions</th></tr></thead><tbody>";
         snapshot.forEach(doc => {
             const receipt = doc.data();
             const parsed = receipt.parsed || {};
+            const geo = receipt.geo || {};
             
             const date = receipt.createdAt.toDate().toLocaleDateString();
             const merchant = parsed.merchant || "N/A";
             const amount = parsed.amount ? `$${parsed.amount.toFixed(2)}` : "N/A";
             const memo = receipt.speech || "";
+            
+            // Location information - prioritize detailed address over coordinates
+            let location = "N/A";
+            if (parsed.locationName && parsed.locationName.trim() !== "") {
+                location = parsed.locationName;
+            } else if (geo.lat && geo.lng) {
+                location = `📍 ${geo.lat.toFixed(6)}, ${geo.lng.toFixed(6)}`;
+            }
+            
             const imageLink = receipt.imagePath ? `<a href="${receipt.imagePath}" target="_blank" rel="noopener noreferrer">View</a>` : "No Image";
             
             // This now includes the full document path in the data-path attribute.
             const deleteButton = `<button class="delete-button" data-path="${doc.ref.path}">Delete</button>`;
             
-            html += `<tr><td>${date}</td><td>${merchant}</td><td>${amount}</td><td>${memo}</td><td>${imageLink}</td><td>${deleteButton}</td></tr>`;
+            html += `<tr><td>${date}</td><td>${merchant}</td><td>${amount}</td><td>${memo}</td><td>${location}</td><td>${imageLink}</td><td>${deleteButton}</td></tr>`;
         });
         html += "</tbody></table>";
         
