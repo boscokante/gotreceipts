@@ -1,6 +1,14 @@
 import Foundation
 import NaturalLanguage // Apple's framework for language analysis
 
+// Simple regex helpers compatible with current Swift toolchain
+private extension String {
+    func matchesRegex(_ pattern: String, caseInsensitive: Bool = false) -> Bool {
+        let opts: String.CompareOptions = caseInsensitive ? [.regularExpression, .caseInsensitive] : [.regularExpression]
+        return self.range(of: pattern, options: opts) != nil
+    }
+}
+
 struct ParsedReceiptData {
     var amount: Double?
     var date: Date?
@@ -63,12 +71,12 @@ class ReceiptParser {
             let lineText = String(line).trimmingCharacters(in: .whitespaces)
             
             // Skip time patterns (like "11:26")
-            if lineText.matches(#"^\d{1,2}:\d{2}$"#) {
+            if lineText.matchesRegex(#"^\d{1,2}:\d{2}$"#) {
                 continue
             }
             
             // Skip dollar amounts
-            if lineText.matches(#"^\$[\d,]+\.?\d*$"#) {
+            if lineText.matchesRegex(#"^\$[\d,]+\.?\d*$"#) {
                 continue
             }
             
@@ -78,7 +86,7 @@ class ReceiptParser {
                     // Extract the name after the pattern
                     if let range = lineText.range(of: pattern, options: .caseInsensitive) {
                         let afterPattern = String(lineText[range.upperBound...]).trimmingCharacters(in: .whitespaces)
-                        if !afterPattern.isEmpty && !afterPattern.matches(#"^\d"#) {
+                        if !afterPattern.isEmpty && !afterPattern.matchesRegex(#"^\d"#) {
                             print("Found merchant from payment pattern: \(afterPattern)")
                             return afterPattern
                         }
@@ -88,9 +96,9 @@ class ReceiptParser {
             
             // If line looks like a name (not time, not amount, not empty)
             if !lineText.isEmpty && 
-               !lineText.matches(#"^\d{1,2}:\d{2}$"#) && 
-               !lineText.matches(#"^\$[\d,]+\.?\d*$"#) &&
-               !lineText.matches(#"^\d+$"#) &&
+               !lineText.matchesRegex(#"^\d{1,2}:\d{2}$"#) && 
+               !lineText.matchesRegex(#"^\$[\d,]+\.?\d*$"#) &&
+               !lineText.matchesRegex(#"^\d+$"#) &&
                lineText.count > 1 {
                 print("Found merchant from fallback: \(lineText)")
                 return lineText
