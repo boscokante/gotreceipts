@@ -9,5 +9,8 @@
   },
   "functions": {
     "source": "server/functions"
+  },
+  "firestore": {
+    "rules": "docs/firestore_rules.txt"
   }
 }

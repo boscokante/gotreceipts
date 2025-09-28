@@ -14,5 +14,11 @@ service cloud.firestore {
     match /{path=**}/receipts/{receiptId} {
       allow list: if request.auth != null;
     }
+
+    // Rule 3: Allow access to userCards collection for authenticated users
+    // This allows both iOS app and web dashboard to manage cards
+    match /userCards/{companyKey} {
+      allow read, write: if request.auth != null;
+    }
   }
 }

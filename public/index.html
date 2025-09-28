@@ -25,10 +25,40 @@
         <div id="dashboard-view" style="display: none;">
             <div class="header">
                 <h1>Dashboard</h1>
-                <button id="logout-button">Logout</button>
+                <div class="header-buttons">
+                    <button id="manage-cards-button">Manage Cards</button>
+                    <button id="logout-button">Logout</button>
+                </div>
             </div>
             <div id="receipts-list">
                 <p>Loading receipts...</p>
+            </div>
+        </div>
+
+        <!-- Card Management Modal -->
+        <div id="card-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Manage Cards</h2>
+                    <button id="close-card-modal" class="close-button">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="add-card-form">
+                        <h3>Add New Card</h3>
+                        <input type="text" id="last-four" placeholder="Last 4 digits (e.g., 1549)" maxlength="4">
+                        <input type="text" id="entity" placeholder="Entity (e.g., HiiiWAV)">
+                        <input type="text" id="card-type" placeholder="Card Type (e.g., CC)">
+                        <input type="text" id="bank" placeholder="Bank (e.g., BofA)">
+                        <button id="add-card-button">Add Card</button>
+                        <p id="card-error-message" class="error-message"></p>
+                    </div>
+                    <div class="cards-list">
+                        <h3>Your Cards</h3>
+                        <div id="cards-container">
+                            <p>Loading cards...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

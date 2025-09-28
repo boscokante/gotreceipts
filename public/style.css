@@ -73,6 +73,11 @@ button:hover {
     margin-bottom: 20px;
 }
 
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
 /* --- Table Styles --- */
 table {
     width: 100%;
@@ -103,4 +108,137 @@ td:nth-child(5), th:nth-child(5) {
 td:nth-child(5) {
     font-family: monospace;
     font-size: 0.9em;
+}
+
+/* --- Modal Styles --- */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+    padding: 0;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #1a73e8;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-button:hover {
+    color: #333;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.add-card-form {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.add-card-form h3 {
+    margin-top: 0;
+    color: #1a73e8;
+}
+
+.add-card-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.cards-list h3 {
+    margin-top: 0;
+    color: #1a73e8;
+}
+
+.card-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background-color: white;
+}
+
+.card-info {
+    font-family: monospace;
+    font-weight: 600;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.toggle-button, .delete-button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.toggle-button {
+    background-color: #34a853;
+    color: white;
+}
+
+.toggle-button.inactive {
+    background-color: #ea4335;
+}
+
+.delete-button {
+    background-color: #ea4335;
+    color: white;
+}
+
+.toggle-button:hover, .delete-button:hover {
+    opacity: 0.8;
 }

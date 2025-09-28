@@ -39,7 +39,8 @@ class ReceiptStore: ObservableObject {
             photoTimestamp: Date(),
             speech: nil,
             parsed: ParsedData(merchant: "Processing...", amount: nil, currency: "USD", date: nil, paymentMethod: nil, categoryHint: nil, purpose: nil, attendees: [], projectOrCompany: nil, locationName: nil),
-            qbo: nil
+            qbo: nil,
+            lastFour: nil
         )
         
         // Save the initial receipt and get the permanent ID.
@@ -93,6 +94,13 @@ class ReceiptStore: ObservableObject {
         
         firestoreService.updateReceipt(id: id, data: data, completion: { _ in
             print("🧾 Updated receipt \(id) with location and location name.")
+        })
+    }
+    
+    func updateReceipt(id: String, withLastFour lastFour: String) {
+        let data: [String: Any] = ["lastFour": lastFour]
+        firestoreService.updateReceipt(id: id, data: data, completion: { _ in
+            print("💳 Updated receipt \(id) with last four: \(lastFour)")
         })
     }
 }

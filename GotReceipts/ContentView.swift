@@ -11,9 +11,11 @@ import CoreLocation
 
 struct ContentView: View {
     @EnvironmentObject var receiptStore: ReceiptStore
+    @StateObject private var cardService = CardService()
     
     @State private var isShowingScanner = false
     @State private var isShowingSpeechInput = false
+    @State private var isShowingCardManagement = false
     @State private var activeReceiptID: String?
     
     private let locationService = LocationService()
@@ -33,6 +35,12 @@ struct ContentView: View {
             }
             .navigationTitle("GotReceipts")
             .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { isShowingCardManagement = true }) {
+                        Image(systemName: "creditcard")
+                    }
+                }
+                
                 ToolbarItem(placement: .bottomBar) {
                     Button(action: { isShowingScanner = true }) {
                         Label("Scan Receipt", systemImage: "camera")
@@ -57,6 +65,9 @@ struct ContentView: View {
             if let receiptID = activeReceiptID {
                 SpeechInputView(receiptID: receiptID)
             }
+        }
+        .sheet(isPresented: $isShowingCardManagement) {
+            CardManagementView(cardService: cardService)
         }
         .onAppear {
             if receiptStore.receipts.isEmpty {
@@ -185,6 +196,16 @@ struct ReceiptRowView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "mappin.and.ellipse")
                     Text(locationName)
+                }
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            }
+            
+            // Display card last four digits if available
+            if let lastFour = receipt.lastFour, !lastFour.isEmpty {
+                HStack(spacing: 4) {
+                    Image(systemName: "creditcard")
+                    Text("****\(lastFour)")
                 }
                 .font(.subheadline)
                 .foregroundColor(.secondary)

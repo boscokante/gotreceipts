@@ -16,11 +16,12 @@ struct Receipt: Identifiable, Codable {
     var speech: String?
     var parsed: ParsedData?
     let qbo: QBOData?
+    var lastFour: String?
     
     // We add coding keys to prevent encoding the id, as Firestore manages it.
     enum CodingKeys: String, CodingKey {
         case id
-        case createdAt, deviceId, userType, companyKey, status, imagePath, ocrText, geo, photoTimestamp, speech, parsed, qbo
+        case createdAt, deviceId, userType, companyKey, status, imagePath, ocrText, geo, photoTimestamp, speech, parsed, qbo, lastFour
     }
 }
 
@@ -58,4 +59,24 @@ struct VendorRef: Codable {
 
 struct ExpenseCategory: Codable {
     let accountRefId: String
+}
+
+struct Card: Identifiable, Codable {
+    let id: String
+    let lastFour: String
+    let entity: String
+    let cardType: String
+    let bank: String
+    let active: Bool
+    let createdAt: Date
+    
+    // Computed property to get the full display name
+    var displayName: String {
+        return "\(lastFour)_\(entity)_\(cardType)_\(bank)"
+    }
+    
+    // Computed property to get a user-friendly description
+    var description: String {
+        return "\(entity) \(cardType) ending in \(lastFour)"
+    }
 }
