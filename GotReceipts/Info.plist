@@ -10,6 +10,10 @@
 	<string>We transcribe your voice description to add details to the receipt.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We tag the receipt with the location of the purchase.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We save processed receipt images to your library when you export.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photos to import payment screenshots.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
