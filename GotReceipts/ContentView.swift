@@ -141,9 +141,20 @@ struct ContentView: View {
     private func drainAppGroupInbox() {
         ensureFirebaseAuthReady {
             // Consume any images sent from the Share Extension
-            AppGroupInbox.consumeImages { image in
+            AppGroupInbox.consumeImages { image, photoLocation, photoTimestamp in
                 print("📱 ContentView: Received image from Share Extension")
-                processScannedImage(image)
+                // Create receipt first
+                guard let localImagePath = fileStorageService.saveImage(image) else { return }
+                receiptStore.addReceipt(ocrText: "Processing...", localImagePath: localImagePath) { permanentID in
+                    guard let realID = permanentID else { return }
+                    self.activeReceiptID = realID
+                    self.isShowingSpeechInput = true
+                    // Use photo EXIF timestamp if provided
+                    if let ts = photoTimestamp {
+                        firestoreService.updateReceipt(id: realID, data: ["photoTimestamp": ts]) { _ in }
+                    }
+                    self.startBackgroundTasks(for: realID, with: image, localPath: localImagePath, photoLocation: photoLocation, photoTimestamp: photoTimestamp)
+                }
             }
         }
     }
@@ -181,18 +192,21 @@ struct ContentView: View {
         }
     }
     
-    private func startBackgroundTasks(for realID: String, with image: UIImage, localPath: String) {
-        // Location Task
-        locationService.requestLocation { location in
-            guard let location = location else {
-                print("Could not get location.")
-                return
+    private func startBackgroundTasks(for realID: String, with image: UIImage, localPath: String, photoLocation: CLLocation? = nil, photoTimestamp: Date? = nil) {
+        // Location Task: prefer photo EXIF location if available, otherwise live GPS
+        if let photoLocation = photoLocation {
+            self.locationService.reverseGeocode(location: photoLocation) { locationName in
+                self.receiptStore.updateReceipt(id: realID, withLocation: photoLocation, locationName: locationName)
             }
-            
-            // Now that we have the location, reverse geocode it.
-            self.locationService.reverseGeocode(location: location) { locationName in
-                // Update the receipt with both the GPS data and the readable name.
-                self.receiptStore.updateReceipt(id: realID, withLocation: location, locationName: locationName)
+        } else {
+            locationService.requestLocation { location in
+                guard let location = location else {
+                    print("Could not get location.")
+                    return
+                }
+                self.locationService.reverseGeocode(location: location) { locationName in
+                    self.receiptStore.updateReceipt(id: realID, withLocation: location, locationName: locationName)
+                }
             }
         }
         

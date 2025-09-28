@@ -7,6 +7,7 @@
 
 import UIKit
 import Social
+import Photos
 
 class ShareViewController: SLComposeServiceViewController {
 
@@ -49,9 +50,22 @@ class ShareViewController: SLComposeServiceViewController {
                     }
                     
                     var image: UIImage?
+                    var meta: [String: Any] = [:]
                     if let url = item as? URL, let data = try? Data(contentsOf: url) {
                         image = UIImage(data: data)
                         print("📤 ShareExtension: Loaded image from URL")
+                        // Try to fetch asset to read location/time
+                        if url.startAccessingSecurityScopedResource() {
+                            defer { url.stopAccessingSecurityScopedResource() }
+                            let assetResults = PHAsset.fetchAssets(withALAssetURLs: [url], options: nil)
+                            if let asset = assetResults.firstObject {
+                                if let loc = asset.location {
+                                    meta["lat"] = loc.coordinate.latitude
+                                    meta["lng"] = loc.coordinate.longitude
+                                }
+                                meta["timestamp"] = ISO8601DateFormatter().string(from: asset.creationDate ?? Date())
+                            }
+                        }
                     } else if let img = item as? UIImage {
                         image = img
                         print("📤 ShareExtension: Loaded image directly")
@@ -67,6 +81,13 @@ class ShareViewController: SLComposeServiceViewController {
                     do {
                         try data.write(to: dest)
                         print("📤 ShareExtension: Successfully saved image to \(dest)")
+                        // Write sidecar JSON with metadata if available
+                        if !meta.isEmpty {
+                            let metaURL = dest.deletingPathExtension().appendingPathExtension("json")
+                            if let metaData = try? JSONSerialization.data(withJSONObject: meta, options: []) {
+                                try? metaData.write(to: metaURL)
+                            }
+                        }
                     } catch {
                         print("📤 ShareExtension: Failed to save image: \(error)")
                     }

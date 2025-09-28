@@ -77,6 +77,11 @@ class ReceiptStore: ObservableObject {
         let data: [String: Any] = ["speech": text]
         firestoreService.updateReceipt(id: id, data: data, completion: { _ in })
     }
+
+    func updateReceipt(id: String, withPhotoTimestamp date: Date) {
+        let data: [String: Any] = ["photoTimestamp": date]
+        firestoreService.updateReceipt(id: id, data: data, completion: { _ in })
+    }
     
     // This function now accepts the optional locationName.
     func updateReceipt(id: String, withLocation location: CLLocation, locationName: String?) {
