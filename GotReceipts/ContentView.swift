@@ -7,16 +7,21 @@
 
 import SwiftUI
 import UIKit
+import PhotosUI
 import CoreLocation
+import FirebaseAuth
 
 struct ContentView: View {
     @EnvironmentObject var receiptStore: ReceiptStore
     @StateObject private var cardService = CardService()
+    @Environment(\.scenePhase) private var scenePhase
     
     @State private var isShowingScanner = false
     @State private var isShowingSpeechInput = false
     @State private var isShowingCardManagement = false
+    @State private var isShowingPhotoPicker = false
     @State private var activeReceiptID: String?
+    @State private var selectedPhotoItem: PhotosPickerItem?
     
     private let locationService = LocationService()
     private let ocrService = OCRService()
@@ -42,12 +47,21 @@ struct ContentView: View {
                 }
                 
                 ToolbarItem(placement: .bottomBar) {
-                    Button(action: { isShowingScanner = true }) {
-                        Label("Scan Receipt", systemImage: "camera")
-                            .font(.headline)
-                            .padding(.horizontal)
+                    HStack(spacing: 12) {
+                        Button(action: { isShowingScanner = true }) {
+                            Label("Scan Receipt", systemImage: "camera")
+                                .font(.headline)
+                                .padding(.horizontal)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        
+                        Button(action: { isShowingPhotoPicker = true }) {
+                            Label("Import Screenshot", systemImage: "photo.on.rectangle")
+                                .font(.headline)
+                                .padding(.horizontal)
+                        }
+                        .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.borderedProminent)
                     .frame(maxWidth: .infinity)
                     .padding()
                 }
@@ -69,10 +83,82 @@ struct ContentView: View {
         .sheet(isPresented: $isShowingCardManagement) {
             CardManagementView(cardService: cardService)
         }
+        .sheet(isPresented: $isShowingPhotoPicker) {
+            NavigationStack {
+                VStack(spacing: 16) {
+                    Text("Select a screenshot or payment image")
+                        .font(.headline)
+                        .padding(.top)
+                    PhotosPicker(selection: $selectedPhotoItem, matching: .images, photoLibrary: .shared()) {
+                        VStack {
+                            Image(systemName: "photo.on.rectangle")
+                                .font(.system(size: 44))
+                                .foregroundColor(.blue)
+                            Text("Open Photos")
+                                .font(.body)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(12)
+                        .padding()
+                    }
+                    Spacer()
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Done") { isShowingPhotoPicker = false }
+                    }
+                }
+            }
+        }
         .onAppear {
             if receiptStore.receipts.isEmpty {
                 isShowingScanner = true
             }
+            drainAppGroupInbox()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                drainAppGroupInbox()
+            }
+        }
+        .onChange(of: selectedPhotoItem) { _, newItem in
+            guard let newItem else { return }
+            Task {
+                if let data = try? await newItem.loadTransferable(type: Data.self),
+                   let image = UIImage(data: data) {
+                    processScannedImage(image)
+                }
+                await MainActor.run {
+                    selectedPhotoItem = nil
+                    isShowingPhotoPicker = false
+                }
+            }
+        }
+    }
+
+    private func drainAppGroupInbox() {
+        ensureFirebaseAuthReady {
+            // Consume any images sent from the Share Extension
+            AppGroupInbox.consumeImages { image in
+                print("📱 ContentView: Received image from Share Extension")
+                processScannedImage(image)
+            }
+        }
+    }
+
+    private func ensureFirebaseAuthReady(_ completion: @escaping () -> Void) {
+        if Auth.auth().currentUser != nil {
+            completion()
+            return
+        }
+        Auth.auth().signInAnonymously { _, error in
+            if let error = error {
+                print("‼️ Firebase Auth sign-in failed: \(error.localizedDescription)")
+                return
+            }
+            completion()
         }
     }
 

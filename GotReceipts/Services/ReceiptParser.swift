@@ -5,6 +5,8 @@ struct ParsedReceiptData {
     var amount: Double?
     var date: Date?
     var merchant: String?
+    var purpose: String?
+    var paymentMethod: String?
 }
 
 class ReceiptParser {
@@ -16,6 +18,11 @@ class ReceiptParser {
         parsedData.amount = findTotalAmount(in: ocrText)
         parsedData.date = findDate(in: ocrText)
         parsedData.merchant = findMerchant(in: ocrText)
+        // Cash App / P2P style heuristics
+        let cash = parseCashAppHints(in: ocrText)
+        if parsedData.merchant == nil, let toName = cash.toName { parsedData.merchant = toName }
+        if parsedData.purpose == nil, let purpose = cash.purpose { parsedData.purpose = purpose }
+        if parsedData.paymentMethod == nil, let source = cash.paymentSource { parsedData.paymentMethod = source }
         
         return parsedData
     }
@@ -109,5 +116,42 @@ class ReceiptParser {
             print("Error creating NSDataDetector: \(error)")
             return nil
         }
+    }
+    
+    // MARK: - Cash App / P2P helpers
+    private func parseCashAppHints(in text: String) -> (toName: String?, purpose: String?, paymentSource: String?) {
+        let lines = text
+            .replacingOccurrences(of: "\r", with: "")
+            .components(separatedBy: "\n")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        
+        var toName: String?
+        var purpose: String?
+        var paymentSource: String?
+        
+        // Example patterns from Cash App screenshot
+        // "Payment between" section often followed by lines: "To: Marcus Drummer" and "From: <name>"
+        if let toLine = lines.first(where: { $0.lowercased().hasPrefix("to:") }) {
+            toName = toLine.replacingOccurrences(of: "To:", with: "", options: [.caseInsensitive]).trimmingCharacters(in: .whitespaces)
+        }
+        if let forLine = lines.first(where: { $0.lowercased().hasPrefix("for ") }) {
+            purpose = String(forLine.dropFirst(4)).trimmingCharacters(in: .whitespaces)
+        }
+        if let sourceIndex = lines.firstIndex(where: { $0.lowercased().contains("payment source") }) {
+            if sourceIndex + 1 < lines.count {
+                let next = lines[sourceIndex + 1]
+                if !next.isEmpty { paymentSource = next }
+            }
+        }
+        
+        // Fallback: if "Payment source" not found, check for common banks in text
+        if paymentSource == nil {
+            let banks = ["Bank of America", "BofA", "Chase", "Wells Fargo", "Brex", "Amex", "Capital One"]
+            for bank in banks {
+                if text.localizedCaseInsensitiveContains(bank) { paymentSource = bank; break }
+            }
+        }
+        
+        return (toName, purpose, paymentSource)
     }
 }

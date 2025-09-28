@@ -15,6 +15,7 @@
 		356963C52E8750AF00A2315C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 356963C42E8750AF00A2315C /* FirebaseAuth */; };
 		356963C72E8750AF00A2315C /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 356963C62E8750AF00A2315C /* FirebaseFirestore */; };
 		356963C92E8750AF00A2315C /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 356963C82E8750AF00A2315C /* FirebaseStorage */; };
+		35F9B41C2E89099B00C0D49D /* GotReceiptsShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 35F9B4122E89099B00C0D49D /* GotReceiptsShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,12 +33,34 @@
 			remoteGlobalIDString = 356963612E871EF100A2315C;
 			remoteInfo = GotReceipts;
 		};
+		35F9B41A2E89099B00C0D49D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3569635A2E871EF100A2315C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 35F9B4112E89099B00C0D49D;
+			remoteInfo = GotReceiptsShareExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		35F9B4212E89099B00C0D49D /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				35F9B41C2E89099B00C0D49D /* GotReceiptsShareExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		356963622E871EF100A2315C /* GotReceipts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GotReceipts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		356963732E871EF300A2315C /* GotReceiptsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GotReceiptsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3569637D2E871EF300A2315C /* GotReceiptsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GotReceiptsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		35F9B4122E89099B00C0D49D /* GotReceiptsShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GotReceiptsShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -47,6 +70,13 @@
 				Info.plist,
 			);
 			target = 356963612E871EF100A2315C /* GotReceipts */;
+		};
+		35F9B4202E89099B00C0D49D /* Exceptions for "GotReceiptsShareExtension" folder in "GotReceiptsShareExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 35F9B4112E89099B00C0D49D /* GotReceiptsShareExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -67,6 +97,14 @@
 		356963802E871EF300A2315C /* GotReceiptsUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = GotReceiptsUITests;
+			sourceTree = "<group>";
+		};
+		35F9B4132E89099B00C0D49D /* GotReceiptsShareExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				35F9B4202E89099B00C0D49D /* Exceptions for "GotReceiptsShareExtension" folder in "GotReceiptsShareExtension" target */,
+			);
+			path = GotReceiptsShareExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -101,6 +139,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		35F9B40F2E89099B00C0D49D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -110,6 +155,7 @@
 				356963642E871EF100A2315C /* GotReceipts */,
 				356963762E871EF300A2315C /* GotReceiptsTests */,
 				356963802E871EF300A2315C /* GotReceiptsUITests */,
+				35F9B4132E89099B00C0D49D /* GotReceiptsShareExtension */,
 				356963632E871EF100A2315C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -120,6 +166,7 @@
 				356963622E871EF100A2315C /* GotReceipts.app */,
 				356963732E871EF300A2315C /* GotReceiptsTests.xctest */,
 				3569637D2E871EF300A2315C /* GotReceiptsUITests.xctest */,
+				35F9B4122E89099B00C0D49D /* GotReceiptsShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -134,10 +181,12 @@
 				3569635E2E871EF100A2315C /* Sources */,
 				3569635F2E871EF100A2315C /* Frameworks */,
 				356963602E871EF100A2315C /* Resources */,
+				35F9B4212E89099B00C0D49D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				35F9B41B2E89099B00C0D49D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				356963642E871EF100A2315C /* GotReceipts */,
@@ -203,6 +252,28 @@
 			productReference = 3569637D2E871EF300A2315C /* GotReceiptsUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		35F9B4112E89099B00C0D49D /* GotReceiptsShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 35F9B41D2E89099B00C0D49D /* Build configuration list for PBXNativeTarget "GotReceiptsShareExtension" */;
+			buildPhases = (
+				35F9B40E2E89099B00C0D49D /* Sources */,
+				35F9B40F2E89099B00C0D49D /* Frameworks */,
+				35F9B4102E89099B00C0D49D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				35F9B4132E89099B00C0D49D /* GotReceiptsShareExtension */,
+			);
+			name = GotReceiptsShareExtension;
+			packageProductDependencies = (
+			);
+			productName = GotReceiptsShareExtension;
+			productReference = 35F9B4122E89099B00C0D49D /* GotReceiptsShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -223,6 +294,9 @@
 					3569637C2E871EF300A2315C = {
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = 356963612E871EF100A2315C;
+					};
+					35F9B4112E89099B00C0D49D = {
+						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
@@ -246,6 +320,7 @@
 				356963612E871EF100A2315C /* GotReceipts */,
 				356963722E871EF300A2315C /* GotReceiptsTests */,
 				3569637C2E871EF300A2315C /* GotReceiptsUITests */,
+				35F9B4112E89099B00C0D49D /* GotReceiptsShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -266,6 +341,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		3569637B2E871EF300A2315C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		35F9B4102E89099B00C0D49D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -296,6 +378,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		35F9B40E2E89099B00C0D49D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -308,6 +397,11 @@
 			isa = PBXTargetDependency;
 			target = 356963612E871EF100A2315C /* GotReceipts */;
 			targetProxy = 3569637E2E871EF300A2315C /* PBXContainerItemProxy */;
+		};
+		35F9B41B2E89099B00C0D49D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 35F9B4112E89099B00C0D49D /* GotReceiptsShareExtension */;
+			targetProxy = 35F9B41A2E89099B00C0D49D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -598,6 +692,63 @@
 			};
 			name = Release;
 		};
+		35F9B41E2E89099B00C0D49D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = GotReceiptsShareExtension/GotReceiptsShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3L66A32827;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GotReceiptsShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GotReceiptsShareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.electrospit.GotReceipts.GotReceiptsShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		35F9B41F2E89099B00C0D49D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = GotReceiptsShareExtension/GotReceiptsShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3L66A32827;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GotReceiptsShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GotReceiptsShareExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.electrospit.GotReceipts.GotReceiptsShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -633,6 +784,15 @@
 			buildConfigurations = (
 				3569638E2E871EF300A2315C /* Debug */,
 				3569638F2E871EF300A2315C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		35F9B41D2E89099B00C0D49D /* Build configuration list for PBXNativeTarget "GotReceiptsShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				35F9B41E2E89099B00C0D49D /* Debug */,
+				35F9B41F2E89099B00C0D49D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

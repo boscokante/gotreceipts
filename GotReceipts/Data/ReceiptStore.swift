@@ -62,12 +62,14 @@ class ReceiptStore: ObservableObject {
     }
     
     func updateReceipt(id: String, withOcrText text: String, parsedData: ParsedReceiptData) {
-        let data: [String: Any] = [
+        var data: [String: Any] = [
             "ocrText": text,
             "parsed.amount": parsedData.amount ?? NSNull(),
             "parsed.date": parsedData.date ?? NSNull(),
             "parsed.merchant": parsedData.merchant ?? "Unknown Merchant"
         ]
+        if let purpose = parsedData.purpose { data["parsed.purpose"] = purpose }
+        if let method = parsedData.paymentMethod { data["parsed.paymentMethod"] = method }
         firestoreService.updateReceipt(id: id, data: data, completion: { _ in })
     }
     
