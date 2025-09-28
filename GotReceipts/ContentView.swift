@@ -151,7 +151,7 @@ struct ContentView: View {
                     self.isShowingSpeechInput = true
                     // Use photo EXIF timestamp if provided
                     if let ts = photoTimestamp {
-                        firestoreService.updateReceipt(id: realID, data: ["photoTimestamp": ts]) { _ in }
+                        receiptStore.updateReceipt(id: realID, withPhotoTimestamp: ts)
                     }
                     self.startBackgroundTasks(for: realID, with: image, localPath: localImagePath, photoLocation: photoLocation, photoTimestamp: photoTimestamp)
                 }
