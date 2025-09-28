@@ -53,11 +53,55 @@ class ReceiptParser {
             return merchant
         }
         
-        // Fallback: If no organization is found, return the first non-empty line.
+        // Enhanced fallback: Look for payment app patterns
+        let paymentAppPatterns = [
+            "Payment to", "Payment between", "To:", "From:",
+            "Cash App", "Venmo", "PayPal", "Zelle"
+        ]
+        
+        for line in lines {
+            let lineText = String(line).trimmingCharacters(in: .whitespaces)
+            
+            // Skip time patterns (like "11:26")
+            if lineText.matches(#"^\d{1,2}:\d{2}$"#) {
+                continue
+            }
+            
+            // Skip dollar amounts
+            if lineText.matches(#"^\$[\d,]+\.?\d*$"#) {
+                continue
+            }
+            
+            // Look for payment app indicators
+            for pattern in paymentAppPatterns {
+                if lineText.localizedCaseInsensitiveContains(pattern) {
+                    // Extract the name after the pattern
+                    if let range = lineText.range(of: pattern, options: .caseInsensitive) {
+                        let afterPattern = String(lineText[range.upperBound...]).trimmingCharacters(in: .whitespaces)
+                        if !afterPattern.isEmpty && !afterPattern.matches(#"^\d"#) {
+                            print("Found merchant from payment pattern: \(afterPattern)")
+                            return afterPattern
+                        }
+                    }
+                }
+            }
+            
+            // If line looks like a name (not time, not amount, not empty)
+            if !lineText.isEmpty && 
+               !lineText.matches(#"^\d{1,2}:\d{2}$"#) && 
+               !lineText.matches(#"^\$[\d,]+\.?\d*$"#) &&
+               !lineText.matches(#"^\d+$"#) &&
+               lineText.count > 1 {
+                print("Found merchant from fallback: \(lineText)")
+                return lineText
+            }
+        }
+        
+        // Final fallback: If no organization is found, return the first non-empty line.
         return lines.first(where: { !$0.trimmingCharacters(in: .whitespaces).isEmpty }).map(String.init)
     }
 
-    /// Finds the total amount using a robust two-pass strategy.
+    /// Finds the total amount using a robust multi-pass strategy.
     private func findTotalAmount(in text: String) -> Double? {
         // Pass 1: Look for explicit keywords (total, amount, etc.)
         let keywordPattern = #"(?i)(?:total|amount|balance|invoice|charge|payment)\s*[:]?\s*[$€£]?\s*(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2}))"#
@@ -81,7 +125,29 @@ class ReceiptParser {
             print("Keyword regex error: \(error.localizedDescription)")
         }
         
-        // Pass 2: If no keyword amount was found, fall back to the largest number on the receipt.
+        // Pass 2: Look for payment app patterns (large amounts, often standalone)
+        let paymentAppPattern = #"\$(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)"#
+        do {
+            let regex = try NSRegularExpression(pattern: paymentAppPattern)
+            let nsString = text as NSString
+            let results = regex.matches(in: text, range: NSRange(location: 0, length: nsString.length))
+            
+            let amounts = results.compactMap { result -> Double? in
+                guard result.numberOfRanges > 1 else { return nil }
+                let amountString = nsString.substring(with: result.range(at: 1)).replacingOccurrences(of: ",", with: "")
+                return Double(amountString)
+            }
+            
+            // For payment apps, look for the largest amount (likely the main transaction)
+            if let maxAmount = amounts.max(), maxAmount > 0 {
+                print("Found payment app amount: \(maxAmount)")
+                return maxAmount
+            }
+        } catch {
+            print("Payment app regex error: \(error.localizedDescription)")
+        }
+        
+        // Pass 3: If no keyword amount was found, fall back to the largest number on the receipt.
         print("No keyword amount found. Falling back to largest number heuristic.")
         let numberPattern = #"(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2}))"#
         do {
