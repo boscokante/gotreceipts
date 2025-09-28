@@ -67,6 +67,7 @@
 		356963B42E873ED200A2315C /* Exceptions for "GotReceipts" folder in "GotReceipts" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Docs/ChatBooksPlan.md,
 				Info.plist,
 			);
 			target = 356963612E871EF100A2315C /* GotReceipts */;
@@ -80,11 +81,22 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		35F9B4252E898D3700C0D49D /* Exceptions for "GotReceipts" folder in "Compile Sources" phase from "GotReceipts" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 3569635E2E871EF100A2315C /* Sources */;
+			membershipExceptions = (
+				Docs/ChatBooksPlan.md,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		356963642E871EF100A2315C /* GotReceipts */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				356963B42E873ED200A2315C /* Exceptions for "GotReceipts" folder in "GotReceipts" target */,
+				35F9B4252E898D3700C0D49D /* Exceptions for "GotReceipts" folder in "Compile Sources" phase from "GotReceipts" target */,
 			);
 			path = GotReceipts;
 			sourceTree = "<group>";
