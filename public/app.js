@@ -1,6 +1,6 @@
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyC3-Fd50ofNs6MwtltxOSz_AAt66XmhICQ",
+    apiKey: "AIzaSyAnmvflns0CqDcX71B4VXBY9JlURLFZM8c",
     authDomain: "gotreceipts-92365.firebaseapp.com",
     projectId: "gotreceipts-92365",
     storageBucket: "gotreceipts-92365.firebasestorage.app",
